@@ -1,0 +1,12 @@
+<suite name="Web test suite" verbose="1">
+    <test name="Positive Testing">
+        <classes>
+            <class name="NewPostTests.PositiveTesting"></class>
+        </classes>
+    </test>
+    <test name="Negative Testing">
+        <classes>
+            <class name="NewPostTests.NegativeTesting"></class>
+        </classes>
+    </test>
+</suite>
