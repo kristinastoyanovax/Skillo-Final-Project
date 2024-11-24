@@ -51,8 +51,7 @@ public class NewPostPage {
         try {
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             return wait.until(ExpectedConditions.visibilityOf(image)).isDisplayed();
-        } catch (NoSuchElementException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
             return false;
         }
     }

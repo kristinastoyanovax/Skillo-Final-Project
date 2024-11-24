@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TestObject {
-    public static final String TEST_RESOURCES_DIR = "src/main/resources/";
+    public static final String TEST_RESOURCES_DIR = "src/test/resources/";
     public static final String DOWNLOAD_DIR = TEST_RESOURCES_DIR.concat("download/");
     public static final String SCREENSHOTS_DIR = TEST_RESOURCES_DIR.concat("screenshots/");
     public static final String REPORTS_DIR = TEST_RESOURCES_DIR.concat("reports/");

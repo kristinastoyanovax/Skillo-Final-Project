@@ -38,4 +38,15 @@ public class PostModal {
         WebElement postUser = modalElement.findElement(By.className("post-user"));
         return postUser.getText();
     }
+
+    public void deletePost() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement deletePostButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/ngb-modal-window/div/div/app-post-modal/div/div[2]/div[4]/div/div/div/div[4]/div/label/a")));
+        deletePostButton.click();
+
+        WebElement yesButton = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("/html/body/ngb-modal-window/div/div/app-post-modal/div/div[2]/div[4]/div/div/div/div[4]/div/div/button[1]")));
+        yesButton.click();
+
+    }
 }

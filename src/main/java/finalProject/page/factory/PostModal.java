@@ -21,6 +21,10 @@ public class PostModal {
     private WebElement postUser;
     @FindBy(tagName = "app-post-modal")
     private WebElement modalElement;
+    @FindBy(xpath = "/html/body/ngb-modal-window/div/div/app-post-modal/div/div[2]/div[4]/div/div/div/div[4]/div/label/a")
+    private WebElement deletePostButton;
+    @FindBy(xpath = "/html/body/ngb-modal-window/div/div/app-post-modal/div/div[2]/div[4]/div/div/div/div[4]/div/div/button[1]")
+    private WebElement yesButton;
 
 
 
@@ -45,6 +49,16 @@ public class PostModal {
 
     public String getPostUser() {
         return postUser.getText();
+    }
+
+    public void deletePost() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.elementToBeClickable(deletePostButton));
+        deletePostButton.click();
+
+        wait.until(ExpectedConditions.elementToBeClickable(yesButton));
+        yesButton.click();
+
     }
 
 }

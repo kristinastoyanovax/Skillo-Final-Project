@@ -1,12 +1,11 @@
 package finalProject.page.object;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 public class ProfilePage {
     public static final String PAGE_URL = "http://training.skillo-bg.com:4300/users/";
@@ -29,26 +28,35 @@ public class ProfilePage {
 
     public void clickPost() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement allPostStatusFilter = wait.until(ExpectedConditions.elementToBeClickable(By.className("post-filter-buttons")));
+
+        var statusFilters = allPostStatusFilter.findElements(By.tagName("label"));
+        try {
+            statusFilters.getFirst().click();
+        }
+        catch (Exception _){}
         WebElement clickNewPost = wait.until(ExpectedConditions.elementToBeClickable(By.tagName("app-post")));
         clickNewPost.click();
     }
 
-    public int getPostCount(String status) {
+    public int getPostCount() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.tagName("app-post")));
         WebElement allPostStatusFilter = wait.until(ExpectedConditions.elementToBeClickable(By.className("post-filter-buttons")));
-
-
-        var statusFilters = allPostStatusFilter.findElements(By.tagName("label"));
-        var elementToClick = status.equals("public") ? statusFilters.get(1) : statusFilters.get(2);
-
+        List<WebElement> statusFilters = allPostStatusFilter.findElements(By.tagName("label"));
         try {
-            elementToClick.click();
-            Thread.sleep(2000);
-        } catch (Exception e) {}
+            statusFilters.getFirst().click();
+        } catch (Exception _) {
 
-        return driver.findElements(By.tagName("app-post")).size();
-    }
-    public void setNumberPosts(int postCount) {
-        expectedNumberPosts = postCount + 1;
+        }
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.tagName("app-spinner")));
+
+        int numberOfPosts = 0;
+        try {
+            numberOfPosts = driver.findElements(By.tagName("app-post")).size();
+        } catch (TimeoutException _) {
+            return 0;
+        }
+        return numberOfPosts;
     }
 }

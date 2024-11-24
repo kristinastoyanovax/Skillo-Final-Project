@@ -12,7 +12,7 @@ import java.io.File;
 public class NegativeTesting extends TestObject {
     @DataProvider(name = "getDataWithImage")
     public Object[][] getDataWithImage() {
-        File postPicture = new File("src/main/resources/uploads/owl.jpg");
+        File postPicture = new File("src/test/resources/uploads/owl.jpg");
         String caption = "Testing create post caption";
 
         return new Object[][]{{"krisiTest@gmail.com", "123456789K", "KristinaStoyanova", postPicture, caption}};
@@ -50,28 +50,17 @@ public class NegativeTesting extends TestObject {
         String actualUserName = profilePage.getUsername();
         Assert.assertEquals(actualUserName, username, "The username is incorrect!");
 
-        // gets number of posts
-        profilePage.setNumberPosts(profilePage.getPostCount("public"));
 
         // Creates post
         header.clickNewPost();
         NewPostPage postPage = new NewPostPage(driver);
         Assert.assertTrue(postPage.isUrlLoaded(), "The POST URL is not correct!");
-        Assert.assertEquals(file.getName(), postPage.getImageName(), "The image name is incorrect!");
+        Assert.assertNotEquals(file.getName(), postPage.getImageName(), "The image name shouldn't match!");
         postPage.populatePostCaption(caption);
         Assert.assertTrue(postPage.isStatusPublic(), "Default status isn't Public");
         postPage.clickCreatePost();
+        Assert.assertTrue(postPage.isUrlLoaded(), "The POST URL is not correct!");
 
-        // check if the number of posts is correct
-        Assert.assertTrue(profilePage.isUrlLoaded(), "The Profile URL is not correct!");
-        Assert.assertEquals(profilePage.getPostCount("public"), profilePage.expectedNumberPosts, "The number of Posts is incorrect!");
-
-        // checks if the post is correct
-        profilePage.clickPost();
-        PostModal postModal = new PostModal(driver);
-        Assert.assertTrue(postModal.isImageVisible(), "The image is not visible!");
-        Assert.assertEquals(postModal.getPostTitle(), caption);
-        Assert.assertEquals(postModal.getPostUser(), username);
     }
 
     //2. Create Private post with image and without description
@@ -107,8 +96,6 @@ public class NegativeTesting extends TestObject {
         String actualUserName = profilePage.getUsername();
         Assert.assertEquals(actualUserName, username, "The username is incorrect!");
 
-        // gets number of posts
-        profilePage.setNumberPosts(profilePage.getPostCount("private"));
 
         // Creates post
         header.clickNewPost();
@@ -121,30 +108,20 @@ public class NegativeTesting extends TestObject {
         postPage.clickPostStatusToggle();
         Assert.assertFalse(postPage.isStatusPublic(), "Toggled status isn't Private");
         postPage.clickCreatePost();
+        Assert.assertTrue(postPage.isUrlLoaded(), "The POST URL is not correct!");
 
-        // check if the number of posts is correct
-        Assert.assertTrue(profilePage.isUrlLoaded(), "The Profile URL is not correct!");
-        Assert.assertEquals(profilePage.getPostCount("private"), profilePage.expectedNumberPosts, "The number of Posts is incorrect!");
-
-        // checks if the post is correct
-        profilePage.clickPost();
-        PostModal postModal = new PostModal(driver);
-        Assert.assertTrue(postModal.isImageVisible(), "The image is not visible!");
-        Assert.assertEquals(postModal.getPostTitle(), caption);
-        Assert.assertEquals(postModal.getPostUser(), username);
     }
 
     //3. Create Public post with PDF file and description
     @DataProvider(name = "getDataWithPdf")
     public Object[][] getDataWithPdf() {
-        File postPicture = new File("src/main/resources/uploads/file.pdf");
+        File postPicture = new File("src/test/resources/uploads/file.pdf");
         String caption = "Testing create post caption";
 
         return new Object[][]{{"krisiTest@gmail.com", "123456789K", "KristinaStoyanova", postPicture, caption}};
     }
     @Test(dataProvider = "getDataWithPdf")
     public void postWithPdfFile(String email, String password, String username, File file, String caption) {
-        //Gets a driver instance from parent class (NewPostTests.TestObject)
         WebDriver driver = getDriver();
 
         HomePage homePage = new HomePage(driver);
@@ -174,29 +151,18 @@ public class NegativeTesting extends TestObject {
         String actualUserName = profilePage.getUsername();
         Assert.assertEquals(actualUserName, username, "The username is incorrect!");
 
-        // gets number of posts
-        profilePage.setNumberPosts(profilePage.getPostCount("public"));
 
         // Creates post
         header.clickNewPost();
         NewPostPage postPage = new NewPostPage(driver);
         Assert.assertTrue(postPage.isUrlLoaded(), "The POST URL is not correct!");
         postPage.uploadPicture(file);
-        Assert.assertTrue(postPage.isImageVisible(), "The image is not visible!");
+        Assert.assertFalse(postPage.isImageVisible(), "The file should not be visible!");
         Assert.assertEquals(file.getName(), postPage.getImageName(), "The image name is incorrect!");
         postPage.populatePostCaption(caption);
         Assert.assertTrue(postPage.isStatusPublic(), "Default status isn't Public");
         postPage.clickCreatePost();
+        Assert.assertTrue(postPage.isUrlLoaded(), "The POST URL is not correct!");
 
-        // check if the number of posts is correct
-        Assert.assertTrue(profilePage.isUrlLoaded(), "The Profile URL is not correct!");
-        Assert.assertEquals(profilePage.getPostCount("public"), profilePage.expectedNumberPosts, "The number of Posts is incorrect!");
-
-        // checks if the post is correct
-        profilePage.clickPost();
-        PostModal postModal = new PostModal(driver);
-        Assert.assertTrue(postModal.isImageVisible(), "The image is not visible!");
-        Assert.assertEquals(postModal.getPostTitle(), caption);
-        Assert.assertEquals(postModal.getPostUser(), username);
     }
 }

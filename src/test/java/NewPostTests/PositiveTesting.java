@@ -13,7 +13,7 @@ import java.io.File;
 public class PositiveTesting extends TestObject {
     @DataProvider(name = "getDataWithImage")
     public Object[][] getDataWithImage() {
-        File postPicture = new File("src/main/resources/uploads/owl.jpg");
+        File postPicture = new File("src/test/resources/uploads/owl.jpg");
         String caption = "Testing create post caption";
 
         return new Object[][]{{"krisiTest@gmail.com", "123456789K", "KristinaStoyanova", postPicture, caption}};
@@ -49,9 +49,6 @@ public class PositiveTesting extends TestObject {
         String actualUserName = profilePage.getUsername();
         Assert.assertEquals(actualUserName, username, "The username is incorrect!");
 
-        // gets number of posts
-        profilePage.setNumberPosts(profilePage.getPostCount("public"));
-
         // Creates post
         header.clickNewPost();
         NewPostPage postPage = new NewPostPage(driver);
@@ -65,7 +62,6 @@ public class PositiveTesting extends TestObject {
 
         // check if the number of posts is correct
         Assert.assertTrue(profilePage.isUrlLoaded(), "The Profile URL is not correct!");
-        Assert.assertEquals(profilePage.getPostCount("public"), profilePage.expectedNumberPosts, "The number of Posts is incorrect!");
 
         // checks if the post is correct
         profilePage.clickPost();
@@ -73,6 +69,10 @@ public class PositiveTesting extends TestObject {
         Assert.assertTrue(postModal.isImageVisible(), "The image is not visible!");
         Assert.assertEquals(postModal.getPostTitle(), caption);
         Assert.assertEquals(postModal.getPostUser(), username);
+
+        postModal.deletePost();
+        // checks if there are 0 posts in the profile
+        Assert.assertEquals(profilePage.getPostCount(), 0, "There shouldn't be any posts in the profile.");
     }
 
     //2. Create Private post with image and description
@@ -107,9 +107,6 @@ public class PositiveTesting extends TestObject {
         String actualUserName = profilePage.getUsername();
         Assert.assertEquals(actualUserName, username, "The username is incorrect!");
 
-        // gets number of posts
-        profilePage.setNumberPosts(profilePage.getPostCount("private"));
-
         // Creates post
         header.clickNewPost();
         NewPostPage postPage = new NewPostPage(driver);
@@ -125,7 +122,6 @@ public class PositiveTesting extends TestObject {
 
         // check if the number of posts is correct
         Assert.assertTrue(profilePage.isUrlLoaded(), "The Profile URL is not correct!");
-        Assert.assertEquals(profilePage.getPostCount("private"), profilePage.expectedNumberPosts, "The number of Posts is incorrect!");
 
         // checks if the post is correct
         profilePage.clickPost();
@@ -133,5 +129,9 @@ public class PositiveTesting extends TestObject {
         Assert.assertTrue(postModal.isImageVisible(), "The image is not visible!");
         Assert.assertEquals(postModal.getPostTitle(), caption);
         Assert.assertEquals(postModal.getPostUser(), username);
+
+        postModal.deletePost();
+
+        Assert.assertEquals(profilePage.getPostCount(), 0 , "There shouldn't be any posts in the profile.");
     }
 }

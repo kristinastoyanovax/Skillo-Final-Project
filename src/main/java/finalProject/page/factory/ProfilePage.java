@@ -1,8 +1,6 @@
 package finalProject.page.factory;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -22,6 +20,10 @@ public class ProfilePage {
     private WebElement clickNewPost;
     @FindBy(className = "post-filter-buttons")
     private WebElement allPostStatusFilter;
+    @FindAll(@FindBy (tagName = "app-post"))
+    private List<WebElement> posts;
+    @FindBy(tagName = "app-spinner")
+    private WebElement loadingSpinner;
 
     public ProfilePage(WebDriver driver) {
         this.driver = driver;
@@ -39,28 +41,29 @@ public class ProfilePage {
 
     public void clickPost() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.elementToBeClickable(allPostStatusFilter));
+
+        var statusFilters = allPostStatusFilter.findElements(By.tagName("label"));
+        try {
+            statusFilters.getFirst().click();
+        }
+        catch (Exception _){}
         wait.until(ExpectedConditions.elementToBeClickable(clickNewPost));
         clickNewPost.click();
     }
 
-    public int getPostCount(String status) {
+    public int getPostCount() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.invisibilityOf(clickNewPost));
         wait.until(ExpectedConditions.elementToBeClickable(allPostStatusFilter));
-
-
-        var statusFilters = allPostStatusFilter.findElements(By.tagName("label"));
-        var elementToClick = status.equals("public") ? statusFilters.get(1) : statusFilters.get(2);
-
+        List<WebElement> statusFilters = allPostStatusFilter.findElements(By.tagName("label"));
         try {
-            elementToClick.click();
-            Thread.sleep(2000);
-        } catch (Exception e) {}
+            statusFilters.getFirst().click();
+        } catch (Exception _) {
 
-        return driver.findElements(By.tagName("app-post")).size();
+        }
+        wait.until(ExpectedConditions.invisibilityOf(loadingSpinner));
 
-    }
-
-    public void setNumberPosts(int postCount) {
-        expectedNumberPosts = postCount + 1;
+        return posts.size();
     }
 }
